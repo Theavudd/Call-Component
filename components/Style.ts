@@ -21,24 +21,26 @@ export default StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: '#0093E9',
     borderRadius: 25,
+    zIndex: 10,
+    elevation: 10,
   },
   buttonText: {
     color: '#fff',
   },
   fullView: {
     width: dimensions.width,
-    height: dimensions.height - 100,
+    height: dimensions.height,
     borderWidth: 5,
   },
   remoteContainer: {
     width: '100%',
-    height: 150,
+    height: 160,
     position: 'absolute',
-    bottom: 5,
+    top: 5,
   },
   remote: {
-    width: 150,
-    height: 150,
+    width: 90,
+    height: 160,
     marginHorizontal: 2.5,
   },
   noUserText: {

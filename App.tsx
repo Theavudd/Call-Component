@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+  FlatList,
   Platform,
+  SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -16,8 +18,9 @@ import requestCameraAndAudioPermission from './components/Permission';
 import styles from './components/Style';
 
 const config = {
-  appId: "8c7c96fa8c0546db919c842a796cff88",
-  token: "007eJxTYHjiolahkxn9/Gegk0fbnUMznuqKnpl788MDhWcbHVa8zjyqwGCRbJ5saZaWaJFsYGpilpJkaWiZbGFilGhuaZaclmZhkc+jkPw+VjH5VMphBiYGRjAE8VkYSlKLSxgYWBlAAAD0kyOh",
+  appId: '8c7c96fa8c0546db919c842a796cff88',
+  token:
+    '007eJxTYHjiolahkxn9/Gegk0fbnUMznuqKnpl788MDhWcbHVa8zjyqwGCRbJ5saZaWaJFsYGpilpJkaWiZbGFilGhuaZaclmZhkc+jkPw+VjH5VMphBiYGRjAE8VkYSlKLSxgYWBlAAAD0kyOh',
   channelName: 'test',
 };
 
@@ -27,7 +30,7 @@ const App = () => {
   const [peerIds, setPeerIds] = useState<number[]>([]);
 
   useEffect(() => {
-    if(Platform.OS == 'android'){
+    if (Platform.OS == 'android') {
       requestCameraAndAudioPermission().then(() => {
         console.log('requested!');
       });
@@ -36,29 +39,35 @@ const App = () => {
 
   useEffect(() => {
     const init = async () => {
-      const { appId } = config;
+      const {appId} = config;
       _engine.current = await RtcEngine.create(appId);
       await _engine.current.enableAudio();
       await _engine.current.enableVideo();
+      await _engine.current.setVideoEncoderConfiguration({
+        dimensions: {width: 180,height: 320,} ,
+        mirrorMode: 1,
+        orientationMode: 2,
+        degradationPrefer: 2,
+      });
 
-      _engine.current.addListener('Warning', (warn) => {
+      _engine.current.addListener('Warning', warn => {
         console.log('Warning', warn);
       });
 
-      _engine.current.addListener('Error', (err) => {
+      _engine.current.addListener('Error', err => {
         console.log('Error', err);
       });
 
       _engine.current.addListener('UserJoined', (uid, elapsed) => {
         console.log('UserJoined', uid, elapsed);
         if (peerIds.indexOf(uid) === -1) {
-          setPeerIds((prev) => [...prev, uid]);
+          setPeerIds(prev => [...prev, uid]);
         }
       });
 
       _engine.current.addListener('UserOffline', (uid, reason) => {
         console.log('UserOffline', uid, reason);
-        setPeerIds((prev) => prev.filter((id) => id !== uid));
+        setPeerIds(prev => prev.filter(id => id !== uid));
       });
 
       _engine.current.addListener(
@@ -66,7 +75,7 @@ const App = () => {
         (channel, uid, elapsed) => {
           console.log('JoinChannelSuccess', channel, uid, elapsed);
           setJoined(true);
-        }
+        },
       );
     };
     init();
@@ -77,7 +86,7 @@ const App = () => {
       config.token,
       config.channelName,
       null,
-      0
+      0,
     );
   };
 
@@ -96,48 +105,88 @@ const App = () => {
           renderMode={VideoRenderMode.FILL}
         />
         {_renderRemoteVideos()}
+        <View
+          style={{
+            height: 50,
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+          }}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              _engine.current?.switchCamera();
+            }}
+          >
+            <Text style={styles.buttonText}>
+              Switch Camera
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={endCall} style={styles.button}>
+            <Text style={styles.buttonText}> End Call </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     ) : null;
   };
 
   const _renderRemoteVideos = () => {
     return (
-      <ScrollView
-        style={styles.remoteContainer}
-        contentContainerStyle={styles.padding}
-        horizontal={true}
-      >
-        {peerIds.map((value,index) => {
+      <FlatList
+        data={peerIds}
+        renderItem={({item, index}) => {
           return (
-            <View style={{borderWidth: 2,}} key={index}>
-
-            <RtcRemoteView.SurfaceView
-            key={index.toString()}
-            style={styles.remote}
-            uid={value}
-            channelId={config.channelName}
-            renderMode={VideoRenderMode.Hidden}
-            zOrderMediaOverlay={true}
-            />
+            <SafeAreaView>
+            <View style={{borderWidth: 2}} key={index}>
+              <RtcRemoteView.SurfaceView
+                key={index.toString()}
+                style={styles.remote}
+                uid={item}
+                channelId={config.channelName}
+                renderMode={VideoRenderMode.Hidden}
+                zOrderMediaOverlay={true}
+              />
             </View>
+            </SafeAreaView>
           );
-        })}
-      </ScrollView>
+        }}
+        contentContainerStyle={styles.padding}
+        style={styles.remoteContainer}
+        horizontal
+      />
+      // <ScrollView
+      //   style={styles.remoteContainer}
+      //   contentContainerStyle={styles.padding}
+      //   horizontal={true}>
+      //   {peerIds.map((item, index) => {
+      //     return (
+      //       <View style={{borderWidth: 2}} key={index}>
+      //         <RtcRemoteView.SurfaceView
+      //           key={index.toString()}
+      //           style={styles.remote}
+      //           uid={item}
+      //           channelId={config.channelName}
+      //           renderMode={VideoRenderMode.Hidden}
+      //           zOrderMediaOverlay={true}
+      //         />
+      //       </View>
+      //     );
+      //   })}
+      // </ScrollView>
     );
   };
 
   return (
     <View style={styles.max}>
       <View style={styles.max}>
-        <View style={styles.buttonHolder}>
-          <TouchableOpacity onPress={startCall} style={styles.button}>
-            <Text style={styles.buttonText}> Start Call </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={endCall} style={styles.button}>
-            <Text style={styles.buttonText}> End Call </Text>
-          </TouchableOpacity>
-        </View>
-        {_renderVideos()}
+        {isJoined ? (
+          _renderVideos()
+        ) : (
+          <View style={styles.buttonHolder}>
+            <TouchableOpacity onPress={startCall} style={styles.button}>
+              <Text style={styles.buttonText}> Start Call </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
