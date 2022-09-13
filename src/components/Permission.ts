@@ -1,9 +1,10 @@
-import { PermissionsAndroid } from 'react-native';
+import {PermissionsAndroid} from 'react-native';
 
 /**
  * @name requestCameraAndAudioPermission
  * @description Function to request permission for Audio and Camera
  */
+
 export default async function requestCameraAndAudioPermission() {
   try {
     const granted = await PermissionsAndroid.requestMultiple([
@@ -16,7 +17,6 @@ export default async function requestCameraAndAudioPermission() {
       granted['android.permission.CAMERA'] ===
         PermissionsAndroid.RESULTS.GRANTED
     ) {
-      console.log('You can use the cameras & mic');
     } else {
       console.log('Permission denied');
     }
