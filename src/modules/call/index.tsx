@@ -22,7 +22,7 @@ const Call = () => {
   const [peerIds, setPeerIds] = useState<number[]>([]);
 
   useEffect(() => {
-    if (Platform.OS == 'android') {
+    if (Platform.OS === 'android') {
       requestCameraAndAudioPermission().then(() => {
         console.log('requested!');
       });
@@ -71,6 +71,7 @@ const Call = () => {
       );
     };
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startCall = async () => {
