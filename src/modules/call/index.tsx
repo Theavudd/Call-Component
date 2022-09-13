@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
@@ -35,6 +35,12 @@ const Call = () => {
       _engine.current = await RtcEngine.create(appId);
       await _engine.current.enableAudio();
       await _engine.current.enableVideo();
+      await _engine.current.setVideoEncoderConfiguration({
+        dimensions: {width: 180,height: 320,} ,
+        mirrorMode: 1,
+        orientationMode: 2,
+        degradationPrefer: 2,
+      });
 
       _engine.current.addListener('Warning', warn => {
         console.log('Warning', warn);
@@ -92,46 +98,88 @@ const Call = () => {
           renderMode={VideoRenderMode.FILL}
         />
         {_renderRemoteVideos()}
+        <View
+          style={{
+            height: 50,
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+          }}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              _engine.current?.switchCamera();
+            }}
+          >
+            <Text style={styles.buttonText}>
+              Switch Camera
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={endCall} style={styles.button}>
+            <Text style={styles.buttonText}> End Call </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     ) : null;
   };
 
   const _renderRemoteVideos = () => {
     return (
-      <ScrollView
-        style={styles.remoteContainer}
-        contentContainerStyle={styles.padding}
-        horizontal={true}>
-        {peerIds.map((value, index) => {
+      <FlatList
+        data={peerIds}
+        renderItem={({item, index}) => {
           return (
+            <SafeAreaView>
             <View style={{borderWidth: 2}} key={index}>
               <RtcRemoteView.SurfaceView
                 key={index.toString()}
                 style={styles.remote}
-                uid={value}
+                uid={item}
                 channelId={config.channelName}
                 renderMode={VideoRenderMode.Hidden}
                 zOrderMediaOverlay={true}
               />
             </View>
+            </SafeAreaView>
           );
-        })}
-      </ScrollView>
+        }}
+        contentContainerStyle={styles.padding}
+        style={styles.remoteContainer}
+        horizontal
+      />
+      // <ScrollView
+      //   style={styles.remoteContainer}
+      //   contentContainerStyle={styles.padding}
+      //   horizontal={true}>
+      //   {peerIds.map((item, index) => {
+      //     return (
+      //       <View style={{borderWidth: 2}} key={index}>
+      //         <RtcRemoteView.SurfaceView
+      //           key={index.toString()}
+      //           style={styles.remote}
+      //           uid={item}
+      //           channelId={config.channelName}
+      //           renderMode={VideoRenderMode.Hidden}
+      //           zOrderMediaOverlay={true}
+      //         />
+      //       </View>
+      //     );
+      //   })}
+      // </ScrollView>
     );
   };
 
   return (
     <View style={styles.max}>
       <View style={styles.max}>
-        <View style={styles.buttonHolder}>
-          <TouchableOpacity onPress={startCall} style={styles.button}>
-            <Text style={styles.buttonText}> Start Call </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={endCall} style={styles.button}>
-            <Text style={styles.buttonText}> End Call </Text>
-          </TouchableOpacity>
-        </View>
-        {_renderVideos()}
+        {isJoined ? (
+          _renderVideos()
+        ) : (
+          <View style={styles.buttonHolder}>
+            <TouchableOpacity onPress={startCall} style={styles.button}>
+              <Text style={styles.buttonText}> Start Call </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
