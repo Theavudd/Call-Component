@@ -1,5 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {FlatList, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Platform,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
@@ -12,10 +19,9 @@ import styles from '../../components/Style';
 const config = {
   appId: '8c7c96fa8c0546db919c842a796cff88',
   token:
-    '007eJxTYHjiolahkxn9/Gegk0fbnUMznuqKnpl788MDhWcbHVa8zjyqwGCRbJ5saZaWaJFsYGpilpJkaWiZbGFilGhuaZaclmZhkc+jkPw+VjH5VMphBiYGRjAE8VkYSlKLSxgYWBlAAAD0kyOh',
-  channelName: 'test',
+    '007eJxTYPjE4vv65sWq+w+39L32dvHu53xwU7Dr5Wvd0oslQhYtl7kUGCySzZMtzdISLZINTE3MUpIsDS2TLUyMEs0tzZLT0iwsbFIVk3dvU0pu31/MysTACIYgPhtDcWJuQU4qAwMrAwgAADguI/I=',
+  channelName: 'sample',
 };
-
 const Call = () => {
   const _engine = useRef<RtcEngine | null>(null);
   const [isJoined, setJoined] = useState(false);
@@ -35,11 +41,12 @@ const Call = () => {
       _engine.current = await RtcEngine.create(appId);
       await _engine.current.enableAudio();
       await _engine.current.enableVideo();
+      await _engine.current.switchCamera();
       await _engine.current.setVideoEncoderConfiguration({
-        dimensions: {width: 180,height: 320,} ,
-        mirrorMode: 1,
-        orientationMode: 2,
-        degradationPrefer: 2,
+        dimensions: {width: 180, height: 320},
+        // mirrorMode: 0,
+        // orientationMode: 2,
+        // degradationPrefer: 2,
       });
 
       _engine.current.addListener('Warning', warn => {
@@ -92,30 +99,24 @@ const Call = () => {
   const _renderVideos = () => {
     return isJoined ? (
       <View style={styles.fullView}>
-        <RtcLocalView.SurfaceView
+        {/* <RtcLocalView.SurfaceView style={styles.max} /> */}
+        <RtcLocalView.TextureView
           style={styles.max}
           channelId={config.channelName}
           renderMode={VideoRenderMode.FILL}
+          mirrorMode={2}
         />
         {_renderRemoteVideos()}
-        <View
-          style={{
-            height: 50,
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-          }}>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
               _engine.current?.switchCamera();
-            }}
-          >
-            <Text style={styles.buttonText}>
-              Switch Camera
-            </Text>
+            }}>
+            <Text style={styles.buttonText}>Switch Camera</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={endCall} style={styles.button}>
-            <Text style={styles.buttonText}> End Call </Text>
+            <Text style={styles.buttonText}>{'End Call'} </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -129,16 +130,17 @@ const Call = () => {
         renderItem={({item, index}) => {
           return (
             <SafeAreaView>
-            <View style={{borderWidth: 2}} key={index}>
-              <RtcRemoteView.SurfaceView
-                key={index.toString()}
-                style={styles.remote}
-                uid={item}
-                channelId={config.channelName}
-                renderMode={VideoRenderMode.Hidden}
-                zOrderMediaOverlay={true}
-              />
-            </View>
+              <View key={index}>
+                {/* <RtcLocalView.SurfaceView style={styles.max} /> */}
+                <RtcRemoteView.SurfaceView
+                  key={index.toString()}
+                  style={styles.remote}
+                  uid={item}
+                  channelId={config.channelName}
+                  renderMode={VideoRenderMode.Hidden}
+                  zOrderMediaOverlay={true}
+                />
+              </View>
             </SafeAreaView>
           );
         }}
@@ -146,25 +148,6 @@ const Call = () => {
         style={styles.remoteContainer}
         horizontal
       />
-      // <ScrollView
-      //   style={styles.remoteContainer}
-      //   contentContainerStyle={styles.padding}
-      //   horizontal={true}>
-      //   {peerIds.map((item, index) => {
-      //     return (
-      //       <View style={{borderWidth: 2}} key={index}>
-      //         <RtcRemoteView.SurfaceView
-      //           key={index.toString()}
-      //           style={styles.remote}
-      //           uid={item}
-      //           channelId={config.channelName}
-      //           renderMode={VideoRenderMode.Hidden}
-      //           zOrderMediaOverlay={true}
-      //         />
-      //       </View>
-      //     );
-      //   })}
-      // </ScrollView>
     );
   };
 

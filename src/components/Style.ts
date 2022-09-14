@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
 const dimensions = {
   width: Dimensions.get('window').width,
@@ -50,5 +50,10 @@ export default StyleSheet.create({
   },
   padding: {
     paddingHorizontal: 2.5,
+  },
+  buttonContainer: {
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
 });
