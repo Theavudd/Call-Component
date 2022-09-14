@@ -33,7 +33,7 @@ export default function Call() {
   const [startPreview, setStartPreview] = useState(false);
   const [switchCamera, setSwitchCamera] = useState(false);
   const [switchRender, setSwitchRender] = useState(true);
-  const [isRenderTextureView, setIsRenderView] = useState(false);
+  const [isRenderTextureView, setIsRenderView] = useState(true);
 
   let _engine = useRef<RtcEngine | null>(null);
 
@@ -183,13 +183,13 @@ export default function Call() {
           title={`${isJoined ? 'Leave' : 'Join'} channel`}
         />
       </View>
-      {Platform.OS === 'android' && (
+      {/* {Platform.OS === 'android' && (
         <Item
           title={'Rendered By TextureView (Default SurfaceView):'}
           isShowSwitch
           onSwitchValueChange={_switchRenderView}
         />
-      )}
+      )} */}
       {_renderVideo()}
       <View style={styles.float}>
         <Button
