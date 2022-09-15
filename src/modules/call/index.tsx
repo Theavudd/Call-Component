@@ -1,171 +1,250 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
-  FlatList,
+  Button,
+  Image,
+  PermissionsAndroid,
   Platform,
-  SafeAreaView,
-  Text,
+  ScrollView,
   TouchableOpacity,
   View,
 } from 'react-native';
+import {styles} from './styles';
+import Modal from 'react-native-modal';
+
 import RtcEngine, {
+  ChannelProfile,
+  ClientRole,
+  RtcEngineContext,
   RtcLocalView,
   RtcRemoteView,
-  VideoRenderMode,
 } from 'react-native-agora';
+import {LocalImages} from '../../utils/constant/LocalImages';
 
-import requestCameraAndAudioPermission from '../../components/Permission';
-import styles from '../../components/Style';
+interface config {
+  appId: string; // AppID of the App registered on Agora
+  channelId: string; // Channel Id Provided by Agora
+  token: string; // Channel Token Provided by Agora
+}
 
-const config = {
-  appId: '8c7c96fa8c0546db919c842a796cff88',
-  token:
-    '007eJxTYPjE4vv65sWq+w+39L32dvHu53xwU7Dr5Wvd0oslQhYtl7kUGCySzZMtzdISLZINTE3MUpIsDS2TLUyMEs0tzZLT0iwsbFIVk3dvU0pu31/MysTACIYgPhtDcWJuQU4qAwMrAwgAADguI/I=',
-  channelName: 'sample',
-};
-const Call = () => {
-  const _engine = useRef<RtcEngine | null>(null);
+interface CallProps {
+  config: config;
+  joinScreenContainerStyle?: any; // Join Screen Container Style
+  imageContainerStyle?: any; //(Optional) Image Container Style Object
+  imageStyle?: any; //(Optional) Image Style Object
+  videoIconContainer?: any; //(Optional) Video Icon Container Style
+  audioIconContainer?: any; //(Optional) Video Icon Container Style
+  videoCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
+  audioCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
+  audioCallIconStyle?: any; //(Optional) Video Icon Styling
+  videoCallIconStyle?: any; //(Optional) Video Icon Styling
+  image?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
+}
+
+export default function Call(props: CallProps) {
   const [isJoined, setJoined] = useState(false);
-  const [peerIds, setPeerIds] = useState<number[]>([]);
+  const [remoteUid, setRemoteUid] = useState<any>([]);
+  const [startPreview, setStartPreview] = useState(false);
+  const [switchCamera, setSwitchCamera] = useState(false);
+  const [switchRender, setSwitchRender] = useState(true);
 
-  useEffect(() => {
+  let _engine = useRef<RtcEngine | null>(null);
+
+  const _initEngine = async () => {
     if (Platform.OS === 'android') {
-      requestCameraAndAudioPermission().then(() => {
-        console.log('requested!');
-      });
+      await PermissionsAndroid.requestMultiple([
+        'android.permission.RECORD_AUDIO',
+        'android.permission.CAMERA',
+      ]);
     }
-  }, []);
 
-  useEffect(() => {
-    const init = async () => {
-      const {appId} = config;
-      _engine.current = await RtcEngine.create(appId);
-      await _engine.current.enableAudio();
-      await _engine.current.enableVideo();
-      await _engine.current.switchCamera();
-      await _engine.current.setVideoEncoderConfiguration({
-        dimensions: {width: 180, height: 320},
-        // mirrorMode: 0,
-        // orientationMode: 2,
-        // degradationPrefer: 2,
-      });
+    _engine.current = await RtcEngine.createWithContext(
+      new RtcEngineContext(props.config.appId),
+    );
+    _addListeners();
 
-      _engine.current.addListener('Warning', warn => {
-        console.log('Warning', warn);
-      });
+    await _engine.current?.enableVideo();
+    await _engine.current?.setChannelProfile(ChannelProfile.LiveBroadcasting);
+    await _engine.current?.setClientRole(ClientRole.Broadcaster);
+    await _engine.current?.startPreview();
+    setStartPreview(true);
+  };
 
-      _engine.current.addListener('Error', err => {
-        console.log('Error', err);
-      });
+  const _addListeners = () => {
+    _engine.current?.addListener('Warning', (warningCode: any) => {
+      console.info('Warning', warningCode);
+    });
+    _engine.current?.addListener('Error', (errorCode: any) => {
+      console.info('Error', errorCode);
+    });
+    _engine.current?.addListener(
+      'JoinChannelSuccess',
+      (channel: any, uid: any, elapsed: any) => {
+        console.info('JoinChannelSuccess', channel, uid, elapsed);
+        setJoined(true);
+      },
+    );
+    _engine.current?.addListener('LeaveChannel', (stats: any) => {
+      console.info('LeaveChannel', stats);
+      setJoined(false);
+      setRemoteUid([]);
+    });
+    _engine.current?.addListener('UserJoined', (uid: any, elapsed: any) => {
+      console.info('UserJoined', uid, elapsed);
+      setRemoteUid([...remoteUid, uid]);
+      setRemoteUid([...remoteUid, uid]);
+    });
+    _engine.current?.addListener('UserOffline', (uid: any, reason: any) => {
+      console.info('UserOffline', uid, reason);
+      setRemoteUid(remoteUid.filter((value: any) => value !== uid));
+    });
+  };
 
-      _engine.current.addListener('UserJoined', (uid, elapsed) => {
-        console.log('UserJoined', uid, elapsed);
-        if (peerIds.indexOf(uid) === -1) {
-          setPeerIds(prev => [...prev, uid]);
-        }
-      });
-
-      _engine.current.addListener('UserOffline', (uid, reason) => {
-        console.log('UserOffline', uid, reason);
-        setPeerIds(prev => prev.filter(id => id !== uid));
-      });
-
-      _engine.current.addListener(
-        'JoinChannelSuccess',
-        (channel, uid, elapsed) => {
-          console.log('JoinChannelSuccess', channel, uid, elapsed);
-          setJoined(true);
-        },
-      );
-    };
-    init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const startCall = async () => {
+  const _joinVideoChannel = async () => {
     await _engine.current?.joinChannel(
-      config.token,
-      config.channelName,
+      props.config.token,
+      props.config.channelId,
       null,
       0,
     );
+    await _engine.current?.enableVideo();
   };
 
-  const endCall = async () => {
+  const _joinAudioChannel = async () => {
+    await _engine.current?.joinChannel(
+      props.config.token,
+      props.config.channelId,
+      null,
+      0,
+    );
+    await _engine.current?.disableVideo();
+  };
+
+  useLayoutEffect(() => {
+    _initEngine();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      _engine.current?.destroy();
+    };
+  }, []);
+
+  const _leaveChannel = async () => {
     await _engine.current?.leaveChannel();
-    setPeerIds([]);
-    setJoined(false);
+    await _engine.current?.disableVideo();
   };
 
-  const _renderVideos = () => {
-    return isJoined ? (
-      <View style={styles.fullView}>
-        {/* <RtcLocalView.SurfaceView style={styles.max} /> */}
-        <RtcLocalView.TextureView
-          style={styles.max}
-          channelId={config.channelName}
-          renderMode={VideoRenderMode.FILL}
-          mirrorMode={2}
-        />
-        {_renderRemoteVideos()}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              _engine.current?.switchCamera();
-            }}>
-            <Text style={styles.buttonText}>Switch Camera</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={endCall} style={styles.button}>
-            <Text style={styles.buttonText}>{'End Call'} </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    ) : null;
+  const _switchCamera = () => {
+    _engine.current
+      ?.switchCamera()
+      .then(() => {
+        setSwitchCamera(!switchCamera);
+      })
+      .catch((err: any) => {
+        console.warn('switchCamera', err);
+      });
   };
 
-  const _renderRemoteVideos = () => {
+  const _switchRender = () => {
+    setSwitchRender(!switchRender);
+    setRemoteUid(remoteUid.reverse());
+  };
+
+  const _renderVideo = () => {
     return (
-      <FlatList
-        data={peerIds}
-        renderItem={({item, index}) => {
-          return (
-            <SafeAreaView>
-              <View key={index}>
-                {/* <RtcLocalView.SurfaceView style={styles.max} /> */}
-                <RtcRemoteView.SurfaceView
-                  key={index.toString()}
+      <View style={styles.container}>
+        {startPreview ? (
+          <RtcLocalView.SurfaceView style={styles.local} />
+        ) : undefined}
+        {remoteUid !== undefined && (
+          <ScrollView horizontal={true} style={styles.remoteContainer}>
+            {remoteUid.map(
+              (value: number, index: React.Key | null | undefined) => (
+                <TouchableOpacity
+                  key={index}
                   style={styles.remote}
-                  uid={item}
-                  channelId={config.channelName}
-                  renderMode={VideoRenderMode.Hidden}
-                  zOrderMediaOverlay={true}
-                />
-              </View>
-            </SafeAreaView>
-          );
-        }}
-        contentContainerStyle={styles.padding}
-        style={styles.remoteContainer}
-        horizontal
-      />
+                  onPress={_switchRender}>
+                  <RtcRemoteView.SurfaceView
+                    style={styles.container}
+                    uid={value}
+                    zOrderMediaOverlay={true}
+                  />
+                </TouchableOpacity>
+              ),
+            )}
+          </ScrollView>
+        )}
+      </View>
     );
   };
 
   return (
-    <View style={styles.max}>
-      <View style={styles.max}>
-        {isJoined ? (
-          _renderVideos()
-        ) : (
-          <View style={styles.buttonHolder}>
-            <TouchableOpacity onPress={startCall} style={styles.button}>
-              <Text style={styles.buttonText}> Start Call </Text>
-            </TouchableOpacity>
+    <View style={styles.container}>
+      <Modal
+        isVisible={isJoined}
+        animationIn={'lightSpeedIn'}
+        animationOut={'lightSpeedOut'}
+        style={styles.modalView}>
+        <View style={styles.top}>
+          <View>
+            <View style={styles.imageContainer}>
+              {props?.image && (
+                <Image
+                  source={props.image}
+                  style={[styles.userImg, props.imageStyle]}
+                />
+              )}
+            </View>
           </View>
-        )}
+        </View>
+        <Button onPress={_leaveChannel} title={'Leave channel'} />
+        {_renderVideo()}
+        <View style={styles.float}>
+          <Button
+            onPress={_switchCamera}
+            title={`Camera ${switchCamera ? 'front' : 'rear'}`}
+          />
+        </View>
+      </Modal>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity
+          style={
+            props?.audioIconContainer
+              ? props?.audioIconContainer
+              : styles.audioIconContainer
+          }
+          onPress={_joinAudioChannel}>
+          <Image
+            source={
+              props?.audioCallIcon ? props?.audioCallIcon : LocalImages.audio
+            }
+            style={
+              props?.audioCallIconStyle
+                ? props.audioCallIconStyle
+                : styles.audioIcon
+            }
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={
+            props?.videoIconContainer
+              ? props?.videoIconContainer
+              : styles.videoIconContainer
+          }
+          onPress={_joinVideoChannel}>
+          <Image
+            source={
+              props?.videoCallIcon ? props?.videoCallIcon : LocalImages.video
+            }
+            style={
+              props?.videoCallIconStyle
+                ? props.videoCallIconStyle
+                : styles.videoIcon
+            }
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
-};
-
-export default Call;
+}
