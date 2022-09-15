@@ -17,7 +17,6 @@ import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
 } from 'react-native-agora';
-import Item from '../../components/item';
 
 const config = {
   appId: '8c7c96fa8c0546db919c842a796cff88',
@@ -33,7 +32,7 @@ export default function Call() {
   const [startPreview, setStartPreview] = useState(false);
   const [switchCamera, setSwitchCamera] = useState(false);
   const [switchRender, setSwitchRender] = useState(true);
-  const [isRenderTextureView, setIsRenderView] = useState(true);
+  const [isRenderTextureView, setIsRenderView] = useState(false);
 
   let _engine = useRef<RtcEngine | null>(null);
 
