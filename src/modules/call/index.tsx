@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   Platform,
   ScrollView,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -19,6 +20,7 @@ import RtcEngine, {
   RtcRemoteView,
 } from 'react-native-agora';
 import {LocalImages} from '../../utils/constant/LocalImages';
+import localImages from '../../utils/localImages';
 
 interface config {
   appId: string; // AppID of the App registered on Agora
@@ -198,13 +200,55 @@ export default function Call(props: CallProps) {
             </View>
           </View>
         </View>
-        <Button onPress={_leaveChannel} title={'Leave channel'} />
         {_renderVideo()}
-        <View style={styles.float}>
-          <Button
-            onPress={_switchCamera}
-            title={`Camera ${switchCamera ? 'front' : 'rear'}`}
-          />
+        <View
+          style={{
+            height: 200,
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            backgroundColor: '#1E1E1Eb3',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          }} >
+          {/* <Button onPress={_leaveChannel} title={'Leave channel'} /> */}
+          <View
+            style={{
+              flexDirection: 'row',
+              borderWidth: 1,
+              justifyContent: 'space-evenly',
+            }}>
+            <TouchableOpacity
+              onPress={() => {}}
+              style={styles.roundButton}>
+              <Image
+                source={localImages.MUTE_MIC}
+                style={{height: 25, width: 25}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={_switchCamera}
+              style={styles.roundButton}>
+              <Image
+                source={localImages.FLIP_CAMERA}
+                style={{height: 25, width: 25}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={_leaveChannel}
+              style={styles.endcallButton}>
+              <Image
+                source={localImages.END_CALL}
+                style={{height: 25, width: 25}}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.float}>
+            <Button
+              onPress={_switchCamera}
+              title={`Camera ${switchCamera ? 'front' : 'rear'}`}
+            />
+          </View>
         </View>
       </Modal>
       <View style={styles.buttonsContainer}>

@@ -73,4 +73,20 @@ export const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
   },
+  endcallButton: {
+    height: vw(50),
+    width: vw(50),
+    backgroundColor: '#EB5545',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: vw(30),
+  },
+  roundButton: {
+    height: vw(50),
+    width: vw(50),
+    backgroundColor: '#FFFFFF29',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: vw(30),
+  },
 });
