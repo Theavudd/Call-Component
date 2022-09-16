@@ -81,10 +81,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     borderRadius: vw(30),
-    marginTop: vw(14),
+    marginTop: vw(20),
   },
   endcallIcon: {height: vw(30), width: vw(30), resizeMode: 'contain'},
-  roundButtonContainer: {alignItems: 'center'},
+  roundButtonContainer: {alignItems: 'center',},
   roundButton: {
     height: vw(50),
     width: vw(50),
