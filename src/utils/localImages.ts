@@ -4,4 +4,5 @@ export default {
     FLIP_CAMERA: require(`${fixedPath}/flip.png`),
     MUTE_MIC: require(`${fixedPath}/mute.png`),
     SPEAKER: require(`${fixedPath}/speaker.png`),
+    Camera_OFF: require(`${fixedPath}/cameraOff.png`),
 }
