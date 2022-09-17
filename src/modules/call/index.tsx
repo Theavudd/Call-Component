@@ -27,7 +27,7 @@ interface config {
 }
 
 interface CallProps {
-  config: config;
+  config: config; // Config file for Agora
   joinScreenContainerStyle?: any; // Join Screen Container Style
   imageContainerStyle?: any; //(Optional) Image Container Style Object
   imageStyle?: any; //(Optional) Image Style Object
@@ -227,11 +227,7 @@ export default function Call(props: CallProps) {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          style={
-            props?.videoIconContainer
-              ? props?.videoIconContainer
-              : styles.videoIconContainer
-          }
+          style={[styles.videoIconContainer, props?.videoIconContainer]}
           onPress={_joinVideoChannel}>
           <Image
             source={

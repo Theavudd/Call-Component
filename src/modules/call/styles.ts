@@ -52,25 +52,24 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   videoIconContainer: {
-    height: vh(30),
-    borderWidth: 1,
-    width: vw(30),
-    marginHorizontal: vw(20),
+    height: vh(25),
+    width: vw(25),
+    marginHorizontal: vw(5),
   },
   audioIcon: {
     height: '100%',
     width: '100%',
   },
   audioIconContainer: {
-    height: vh(30),
-    borderWidth: 1,
-    width: vw(30),
-    marginHorizontal: vw(20),
+    height: vh(25),
+    width: vw(25),
+    marginHorizontal: vw(10),
   },
   modalView: {
     margin: 0,
   },
   buttonsContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
 });
