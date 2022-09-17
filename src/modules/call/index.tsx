@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   Platform,
   ScrollView,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -19,6 +20,7 @@ import RtcEngine, {
   RtcRemoteView,
 } from 'react-native-agora';
 import {LocalImages} from '../../utils/constant/LocalImages';
+import localImages from '../../utils/localImages';
 
 interface config {
   appId: string; // AppID of the App registered on Agora
@@ -198,13 +200,73 @@ export default function Call(props: CallProps) {
             </View>
           </View>
         </View>
-        <Button onPress={_leaveChannel} title={'Leave channel'} />
         {_renderVideo()}
-        <View style={styles.float}>
-          <Button
-            onPress={_switchCamera}
-            title={`Camera ${switchCamera ? 'front' : 'rear'}`}
-          />
+        <View style={styles.profileContainer}>
+          <Image source={props.image} style={styles.profileImage} />
+          <View style={styles.nameContainer}>
+            <Text style={styles.nameText} >
+              John Smith
+            </Text>
+            <Text style={styles.connectingText} >
+            connecting...
+            </Text>
+          </View>
+          
+        </View>
+
+        <View
+          style={styles.modalBottomContainer}>
+          <View style={styles.buttonParentContainer}>
+            <View style={styles.roundButtonContainer}>
+              <TouchableOpacity 
+              // onPress={() => {}} 
+              style={styles.roundButton}>
+                <Image
+                  source={localImages.MUTE_MIC}
+                  style={styles.roundButtonIcon}
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttonText}> mute </Text>
+            </View>
+            <View style={styles.roundButtonContainer}>
+              <TouchableOpacity
+                // onPress={()=>{}}
+                style={styles.roundButton}>
+                <Image
+                  source={localImages.Camera_OFF}
+                  style={styles.roundButtonIcon}
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttonText}> Camera Off </Text>
+            </View>
+            <View style={styles.roundButtonContainer}>
+              <TouchableOpacity
+                onPress={_switchCamera}
+                style={styles.roundButton}>
+                <Image
+                  source={localImages.FLIP_CAMERA}
+                  style={styles.roundButtonIcon}
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttonText}> flip </Text>
+            </View>
+            <View style={styles.roundButtonContainer}>
+              <TouchableOpacity
+                // onPress={()=>{}}
+                style={styles.roundButton}>
+                <Image
+                  source={localImages.SPEAKER}
+                  style={styles.roundButtonIcon}
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttonText}> Speaker </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={_leaveChannel}
+            style={styles.endcallButton}>
+            <Image source={localImages.END_CALL} style={styles.endcallIcon} />
+          </TouchableOpacity>
         </View>
       </Modal>
       <View style={styles.buttonsContainer}>

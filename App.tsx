@@ -4,7 +4,7 @@ import Call from './src/modules/call';
 const config = {
   appId: '8c7c96fa8c0546db919c842a796cff88',
   token:
-    '007eJxTYGAN+XKVYcPH3FVtomesX3Mkf8or3zf7bNW93Y80LimuzeRRYLBINk+2NEtLtEg2MDUxS0myNLRMtjAxSjS3NEtOS7OwaDmslMwkqpLc0nGEiYmBEQxBfDaG4sTcgpxUBgZWBhAAAMwWIZM=',
+    '007eJxTYOjdkuaq8an7gnPfyi0nHYUk5j3xrI/nMInQ2SjybyWvc70Cg0WyebKlWVqiRbKBqYlZSpKloWWyhYlRormlWXJamoVFdqxK8ut1qslmAouYmBgYwRDEZ2MoTswtyEllYGBlAAEAFiQgmg==',
   channelId: 'sample',
 };
 
@@ -15,6 +15,7 @@ export default function App() {
       videoIconContainer={undefined}
       videoCallIcon={undefined}
       videoCallIconStyle={undefined}
+      image={require('./src/assets/images/videoCamera.png')}
     />
   );
 }
