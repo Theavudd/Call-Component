@@ -224,7 +224,13 @@ export default function Call(props: CallProps) {
   };
 
   const toggleSpeaker = async () => {
-    // await _engine.current?.
+    try {
+      await _engine.current?.setEnableSpeakerphone(!speaker);
+      setSpeaker(!speaker);
+      // setSpeaker(_engine.current?.isSpeakerphoneEnabled());
+    } catch (error: any) {
+      showSnackBar(error.message);
+    }
   };
 
   return (
