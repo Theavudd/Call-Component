@@ -4,7 +4,7 @@ import Call from './src/modules/call';
 const config = {
   appId: '8c7c96fa8c0546db919c842a796cff88',
   token:
-    '007eJxTYOjdkuaq8an7gnPfyi0nHYUk5j3xrI/nMInQ2SjybyWvc70Cg0WyebKlWVqiRbKBqYlZSpKloWWyhYlRormlWXJamoVFdqxK8ut1qslmAouYmBgYwRDEZ2MoTswtyEllYGBlAAEAFiQgmg==',
+    '007eJxTYPBwNjvzIn1C2wTfd25qvBOXONq5z1irPPNT9VZGiXNBx24oMFgkmydbmqUlWiQbmJqYpSRZGlomW5gYJZpbmiWnpVlY7PqonmzlrJmccl2AiYmBEQxBfDaG4sTcgpxUBgZWBhAAADV9IHc=',
   channelId: 'sample',
 };
 
@@ -15,7 +15,8 @@ export default function App() {
       videoIconContainer={undefined}
       videoCallIcon={undefined}
       videoCallIconStyle={undefined}
-      image={require('./src/assets/images/videoCamera.png')}
+      profileImage={require('./src/assets/images/videoCamera.png')}
+      profileName={'John Smith'}
     />
   );
 }

@@ -82,8 +82,14 @@ export const styles = StyleSheet.create({
     borderRadius: vw(30),
     marginTop: vw(20),
   },
-  endcallIcon: {height: vw(30), width: vw(30), resizeMode: 'contain'},
-  roundButtonContainer: {alignItems: 'center',},
+  endcallIcon: {
+    height: vw(30),
+    width: vw(30),
+    resizeMode: 'contain',
+  },
+  roundButtonContainer: {
+    alignItems: 'center',
+  },
   roundButton: {
     height: vw(50),
     width: vw(50),
@@ -112,9 +118,17 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: vw(10),
     borderTopRightRadius: vw(10),
   },
-  connectingText: {fontSize: 21, color: '#FFFFFFA8'},
-  nameText: {fontSize: 32, color: 'white'},
-  nameContainer: {marginLeft: 10},
+  connectingText: {
+    fontSize: 21,
+    color: '#FFFFFFA8',
+  },
+  nameText: {
+    fontSize: 32,
+    color: 'white',
+  },
+  nameContainer: {
+    marginLeft: 10,
+  },
   profileImage: {
     backgroundColor: 'white',
     height: vw(60),
