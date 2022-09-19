@@ -19,6 +19,7 @@
     "react-native": "0.70.0",
     "react-native-agora": "^3.7.1",
     "react-native-modal": "^13.0.1",
+    "react-native-snackbar": "^2.4.0",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
     "redux-logger": "^3.0.6",

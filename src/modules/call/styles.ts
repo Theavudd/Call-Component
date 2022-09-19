@@ -52,26 +52,25 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   videoIconContainer: {
-    height: vh(30),
-    borderWidth: 1,
-    width: vw(30),
-    marginHorizontal: vw(20),
+    height: vh(25),
+    width: vw(25),
+    marginHorizontal: vw(5),
   },
   audioIcon: {
     height: '100%',
     width: '100%',
   },
   audioIconContainer: {
-    height: vh(30),
-    borderWidth: 1,
-    width: vw(30),
-    marginHorizontal: vw(20),
+    height: vh(25),
+    width: vw(25),
+    marginHorizontal: vw(10),
   },
   modalView: {
     margin: 0,
   },
   buttonsContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   endcallButton: {
     height: vw(50),
@@ -83,8 +82,14 @@ export const styles = StyleSheet.create({
     borderRadius: vw(30),
     marginTop: vw(20),
   },
-  endcallIcon: {height: vw(30), width: vw(30), resizeMode: 'contain'},
-  roundButtonContainer: {alignItems: 'center',},
+  endcallIcon: {
+    height: vw(30),
+    width: vw(30),
+    resizeMode: 'contain',
+  },
+  roundButtonContainer: {
+    alignItems: 'center',
+  },
   roundButton: {
     height: vw(50),
     width: vw(50),
@@ -113,9 +118,17 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: vw(10),
     borderTopRightRadius: vw(10),
   },
-  connectingText: {fontSize: 21, color: '#FFFFFFA8'},
-  nameText: {fontSize: 32, color: 'white'},
-  nameContainer: {marginLeft: 10},
+  connectingText: {
+    fontSize: 21,
+    color: '#FFFFFFA8',
+  },
+  nameText: {
+    fontSize: 32,
+    color: 'white',
+  },
+  nameContainer: {
+    marginLeft: 10,
+  },
   profileImage: {
     backgroundColor: 'white',
     height: vw(60),

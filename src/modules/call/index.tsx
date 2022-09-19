@@ -1,9 +1,9 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
-  Button,
   Image,
   PermissionsAndroid,
   Platform,
+  SafeAreaView,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -21,6 +21,8 @@ import RtcEngine, {
 } from 'react-native-agora';
 import {LocalImages} from '../../utils/constant/LocalImages';
 import localImages from '../../utils/localImages';
+import {LocalStrings} from '../../utils/constant/LocalStrings';
+import {showSnackBar} from '../../utils/CommonFunctions';
 
 interface config {
   appId: string; // AppID of the App registered on Agora
@@ -29,7 +31,7 @@ interface config {
 }
 
 interface CallProps {
-  config: config;
+  config: config; // Config file for Agora
   joinScreenContainerStyle?: any; // Join Screen Container Style
   imageContainerStyle?: any; //(Optional) Image Container Style Object
   imageStyle?: any; //(Optional) Image Style Object
@@ -39,12 +41,17 @@ interface CallProps {
   audioCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
   audioCallIconStyle?: any; //(Optional) Video Icon Styling
   videoCallIconStyle?: any; //(Optional) Video Icon Styling
-  image?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
+  profileName: string; //Name of the Profile
+  profileImage?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
 }
 
 export default function Call(props: CallProps) {
+  const [mute, setMute] = useState(false);
+  const [camera, setCamera] = useState(true);
+  const [speaker, setSpeaker] = useState(true);
   const [isJoined, setJoined] = useState(false);
   const [remoteUid, setRemoteUid] = useState<any>([]);
+  const [isConnected, setConnected] = useState(false);
   const [startPreview, setStartPreview] = useState(false);
   const [switchCamera, setSwitchCamera] = useState(false);
   const [switchRender, setSwitchRender] = useState(true);
@@ -102,23 +109,34 @@ export default function Call(props: CallProps) {
   };
 
   const _joinVideoChannel = async () => {
-    await _engine.current?.joinChannel(
-      props.config.token,
-      props.config.channelId,
-      null,
-      0,
-    );
-    await _engine.current?.enableVideo();
+    try {
+      await _engine.current?.joinChannel(
+        props.config.token,
+        props.config.channelId,
+        null,
+        0,
+      );
+      setCamera(true);
+      setConnected(true);
+      await _engine.current?.enableVideo();
+    } catch (error: any) {
+      showSnackBar(error.message);
+    }
   };
 
   const _joinAudioChannel = async () => {
-    await _engine.current?.joinChannel(
-      props.config.token,
-      props.config.channelId,
-      null,
-      0,
-    );
-    await _engine.current?.disableVideo();
+    try {
+      await _engine.current?.joinChannel(
+        props.config.token,
+        props.config.channelId,
+        null,
+        0,
+      );
+      setCamera(false);
+      await _engine.current?.disableVideo();
+    } catch (error: any) {
+      showSnackBar(error.message);
+    }
   };
 
   useLayoutEffect(() => {
@@ -133,8 +151,13 @@ export default function Call(props: CallProps) {
   }, []);
 
   const _leaveChannel = async () => {
-    await _engine.current?.leaveChannel();
-    await _engine.current?.disableVideo();
+    try {
+      await _engine.current?.leaveChannel();
+      setConnected(false);
+      await _engine.current?.disableVideo();
+    } catch (error: any) {
+      showSnackBar(error.message);
+    }
   };
 
   const _switchCamera = () => {
@@ -143,8 +166,9 @@ export default function Call(props: CallProps) {
       .then(() => {
         setSwitchCamera(!switchCamera);
       })
-      .catch((err: any) => {
-        console.warn('switchCamera', err);
+      .catch((error: any) => {
+        showSnackBar(error.message);
+        console.warn('switchCamera', error);
       });
   };
 
@@ -181,8 +205,30 @@ export default function Call(props: CallProps) {
     );
   };
 
+  const toggleMute = async () => {
+    try {
+      await _engine.current?.muteLocalAudioStream(!mute);
+      setMute(!mute);
+    } catch (error: any) {
+      showSnackBar(error.message);
+    }
+  };
+
+  const toggleCamera = async () => {
+    try {
+      await _engine.current?.enableLocalVideo(!camera);
+      setCamera(!camera);
+    } catch (error: any) {
+      showSnackBar(error.message);
+    }
+  };
+
+  const toggleSpeaker = async () => {
+    // await _engine.current?.
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Modal
         isVisible={isJoined}
         animationIn={'lightSpeedIn'}
@@ -191,9 +237,9 @@ export default function Call(props: CallProps) {
         <View style={styles.top}>
           <View>
             <View style={styles.imageContainer}>
-              {props?.image && (
+              {props?.profileImage && (
                 <Image
-                  source={props.image}
+                  source={props.profileImage}
                   style={[styles.userImg, props.imageStyle]}
                 />
               )}
@@ -202,42 +248,56 @@ export default function Call(props: CallProps) {
         </View>
         {_renderVideo()}
         <View style={styles.profileContainer}>
-          <Image source={props.image} style={styles.profileImage} />
+          <Image source={props.profileImage} style={styles.profileImage} />
           <View style={styles.nameContainer}>
-            <Text style={styles.nameText} >
-              John Smith
-            </Text>
-            <Text style={styles.connectingText} >
-            connecting...
-            </Text>
+            <Text style={styles.nameText}>{props?.profileName}</Text>
+            <Text style={styles.connectingText}>{`${
+              isConnected ? LocalStrings.connected : LocalStrings.connecting
+            }`}</Text>
           </View>
-          
         </View>
 
-        <View
-          style={styles.modalBottomContainer}>
+        <View style={styles.modalBottomContainer}>
           <View style={styles.buttonParentContainer}>
             <View style={styles.roundButtonContainer}>
-              <TouchableOpacity 
-              // onPress={() => {}} 
-              style={styles.roundButton}>
+              <TouchableOpacity
+                onPress={toggleMute}
+                activeOpacity={0.8}
+                style={
+                  !mute
+                    ? styles.roundButton
+                    : [styles.roundButton, {backgroundColor: 'white'}]
+                }>
                 <Image
                   source={localImages.MUTE_MIC}
-                  style={styles.roundButtonIcon}
+                  style={
+                    !mute
+                      ? styles.roundButtonIcon
+                      : [styles.roundButtonIcon, {tintColor: 'black'}]
+                  }
                 />
               </TouchableOpacity>
-              <Text style={styles.buttonText}> mute </Text>
+              <Text style={styles.buttonText}>{LocalStrings.mute}</Text>
             </View>
             <View style={styles.roundButtonContainer}>
               <TouchableOpacity
-                // onPress={()=>{}}
-                style={styles.roundButton}>
+                onPress={toggleCamera}
+                activeOpacity={0.8}
+                style={
+                  camera
+                    ? styles.roundButton
+                    : [styles.roundButton, {backgroundColor: 'white'}]
+                }>
                 <Image
                   source={localImages.Camera_OFF}
-                  style={styles.roundButtonIcon}
+                  style={
+                    camera
+                      ? styles.roundButtonIcon
+                      : [styles.roundButtonIcon, {tintColor: 'black'}]
+                  }
                 />
               </TouchableOpacity>
-              <Text style={styles.buttonText}> Camera Off </Text>
+              <Text style={styles.buttonText}> {LocalStrings.CameraOff} </Text>
             </View>
             <View style={styles.roundButtonContainer}>
               <TouchableOpacity
@@ -248,18 +308,27 @@ export default function Call(props: CallProps) {
                   style={styles.roundButtonIcon}
                 />
               </TouchableOpacity>
-              <Text style={styles.buttonText}> flip </Text>
+              <Text style={styles.buttonText}> {LocalStrings.flip} </Text>
             </View>
             <View style={styles.roundButtonContainer}>
               <TouchableOpacity
-                // onPress={()=>{}}
-                style={styles.roundButton}>
+                onPress={toggleSpeaker}
+                activeOpacity={0.8}
+                style={
+                  speaker
+                    ? styles.roundButton
+                    : [styles.roundButton, {backgroundColor: 'white'}]
+                }>
                 <Image
                   source={localImages.SPEAKER}
-                  style={styles.roundButtonIcon}
+                  style={
+                    speaker
+                      ? styles.roundButtonIcon
+                      : [styles.roundButtonIcon, {tintColor: 'black'}]
+                  }
                 />
               </TouchableOpacity>
-              <Text style={styles.buttonText}> Speaker </Text>
+              <Text style={styles.buttonText}> {LocalStrings.speaker} </Text>
             </View>
           </View>
           <TouchableOpacity
@@ -289,11 +358,7 @@ export default function Call(props: CallProps) {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          style={
-            props?.videoIconContainer
-              ? props?.videoIconContainer
-              : styles.videoIconContainer
-          }
+          style={[styles.videoIconContainer, props?.videoIconContainer]}
           onPress={_joinVideoChannel}>
           <Image
             source={
@@ -307,6 +372,6 @@ export default function Call(props: CallProps) {
           />
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
