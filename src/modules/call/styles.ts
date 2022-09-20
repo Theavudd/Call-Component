@@ -38,12 +38,21 @@ export const styles = StyleSheet.create({
     elevation: 20,
   },
   remoteContainer: {
-    flex: 1,
+    height: '100%',
+    width: '100%',
   },
   singleRemote: {
     flex: 1,
     zIndex: 100,
     elevation: 100,
+  },
+  rowRemote: {
+    height: '50%',
+    width: '100%',
+  },
+  columnRemote: {
+    height: '50%',
+    width: '50%',
   },
   remote: {
     minWidth: vw(150),

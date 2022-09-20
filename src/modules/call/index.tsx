@@ -101,7 +101,6 @@ export default function Call(props: CallProps) {
     _engine.current?.addListener('UserJoined', (uid: any, elapsed: any) => {
       console.info('UserJoined', uid, elapsed);
       setRemoteUid([...remoteUid, uid]);
-      setRemoteUid([...remoteUid, uid]);
     });
     _engine.current?.addListener('UserOffline', (uid: any, reason: any) => {
       console.info('UserOffline', uid, reason);
@@ -144,6 +143,7 @@ export default function Call(props: CallProps) {
     _initEngine();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log('remoteUid', remoteUid);
 
   useEffect(() => {
     return () => {
