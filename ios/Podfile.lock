@@ -328,6 +328,8 @@ PODS:
   - react-native-agora (3.7.1):
     - AgoraRtcEngine_iOS (= 3.7.0.3)
     - React-Core
+  - react-native-blur (4.2.0):
+    - React-Core
   - react-native-slider (4.3.1):
     - React-Core
   - React-perflogger (0.70.0)
@@ -398,6 +400,8 @@ PODS:
     - React-perflogger (= 0.70.0)
   - RNCAsyncStorage (1.17.10):
     - React-Core
+  - RNSnackbar (2.4.0):
+    - React-Core
   - SocketRocket (0.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -451,6 +455,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-agora (from `../node_modules/react-native-agora`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -465,6 +470,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -531,6 +537,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-agora:
     :path: "../node_modules/react-native-agora"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
   React-perflogger:
@@ -559,6 +567,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNSnackbar:
+    :path: "../node_modules/react-native-snackbar"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -599,6 +609,7 @@ SPEC CHECKSUMS:
   React-jsinspector: bd839d6c2c28e49fe1373f055735d2abecbd6cf3
   React-logger: 48d82b9be8e44d86668de4453fdb60255516388b
   react-native-agora: c328ef8c381d7b22cc11d1eb298d8ff8a8e7a70d
+  react-native-blur: 3e9c8e8e9f7d17fa1b94e1a0ae9fd816675f5382
   react-native-slider: d3ae4270cf8a8cc45a69912db0cc42b151560d5a
   React-perflogger: 77947e49d84e31eb87d454d4ef327542dcfeaebc
   React-RCTActionSheet: 9f5fd6c1666c1a834ab7f45a452ed08b1de44eb8
@@ -613,10 +624,11 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 80c195ffcafb190f531fdc849dc2d19cb4bb2b34
   ReactCommon: de55f940495d7bf87b5d7bf55b5b15cdd50d7d7b
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
+  RNSnackbar: be3333a21a453ccc272f41a8add5a71f7d44dfcd
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: 82c9e8f652789f67d98bed5aef9d6653f71b04a9
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 890546b7c208a0a9ff6d04341ef7f1cf1a75445b
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2
