@@ -102,7 +102,6 @@ export default function Call(props: CallProps) {
     _engine.current?.addListener('UserJoined', (uid: any, elapsed: any) => {
       console.info('UserJoined', uid, elapsed);
       setRemoteUid([...remoteUid, uid]);
-      setRemoteUid([...remoteUid, uid]);
     });
     _engine.current?.addListener('UserOffline', (uid: any, reason: any) => {
       console.info('UserOffline', uid, reason);
@@ -145,6 +144,7 @@ export default function Call(props: CallProps) {
     _initEngine();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  console.log('remoteUid',remoteUid)
 
   useEffect(() => {
     return () => {
@@ -211,7 +211,8 @@ export default function Call(props: CallProps) {
                   />
                 </TouchableOpacity>
               ),
-            )}
+            )
+          }
           </View>
         )}
         {startPreview ? (
@@ -311,7 +312,7 @@ export default function Call(props: CallProps) {
                     : [styles.roundButton, {backgroundColor: 'white'}]
                 }>
                 <Image
-                  source={localImages.Camera_OFF}
+                  source={localImages.CAMERA_OFF}
                   style={
                     camera
                       ? styles.roundButtonIcon
@@ -324,9 +325,11 @@ export default function Call(props: CallProps) {
             <View style={styles.roundButtonContainer}>
               <TouchableOpacity
                 onPress={_switchCamera}
-                style={styles.roundButton}>
+                style={switchCamera
+                  ? [styles.roundButton, {backgroundColor: 'white'}]
+                  : styles.roundButton}>
                 <Image
-                  source={localImages.FLIP_CAMERA}
+                  source={ switchCamera ? localImages.REAR_CAMERA : localImages.FLIP_CAMERA}
                   style={styles.roundButtonIcon}
                 />
               </TouchableOpacity>
