@@ -30,18 +30,26 @@ export const styles = StyleSheet.create({
     color: 'black',
   },
   local: {
-    flex: 1,
+    position: 'absolute',
+    height: vw(100),
+    width: vw(75),
+    shadowColor: 'transparent',
+    zIndex: 20,
+    elevation: 20,
   },
   remoteContainer: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
+    flex: 1,
+  },
+  singleRemote: {
+    flex: 1,
     zIndex: 100,
     elevation: 100,
   },
   remote: {
-    width: vw(130),
-    height: vh(200),
+    minWidth: vw(150),
+    maxHeight: '100%',
+    maxWidth: '100%',
+    minHeight: vh(150),
   },
   joinScreenContainer: {
     alignItems: 'center',
@@ -82,6 +90,9 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: vw(30),
     marginTop: vw(20),
+    zIndex: 10,
+    elevation: 10,
+    shadowColor: '#00000000',
   },
   endcallIcon: {
     height: vw(30),
@@ -108,7 +119,10 @@ export const styles = StyleSheet.create({
   buttonParentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: vh(35),
+    marginTop: vw(30),
+    zIndex: 10,
+    elevation: 10,
+    shadowColor: '#00000000',
   },
   modalBottomContainer: {
     height: vh(250),
@@ -118,6 +132,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#1E1E1Eb3',
     borderTopLeftRadius: vw(10),
     borderTopRightRadius: vw(10),
+    overflow: 'hidden',
+    zIndex: 3,
+    elevation: 3,
+    shadowColor: '#00000000',
   },
   connectingText: {
     fontSize: 21,

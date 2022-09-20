@@ -1,10 +1,10 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {
   Image,
+  ImageStyle,
   PermissionsAndroid,
   Platform,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -40,8 +40,8 @@ interface CallProps {
   audioIconContainer?: any; //(Optional) Video Icon Container Style
   videoCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
   audioCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
-  audioCallIconStyle?: any; //(Optional) Video Icon Styling
-  videoCallIconStyle?: any; //(Optional) Video Icon Styling
+  audioCallIconStyle?: ImageStyle; //(Optional) Video Icon Styling
+  videoCallIconStyle?: ImageStyle; //(Optional) Video Icon Styling
   profileName: string; //Name of the Profile
   profileImage?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
 }
@@ -182,27 +182,47 @@ export default function Call(props: CallProps) {
   const _renderVideo = () => {
     return (
       <View style={styles.container}>
-        {startPreview ? (
-          <RtcLocalView.SurfaceView style={styles.local} />
-        ) : undefined}
         {remoteUid !== undefined && (
-          <ScrollView horizontal={true} style={styles.remoteContainer}>
+          // remoteUid.map(
+          //   (value: number, index: React.Key | null | undefined) => (
+          //     <TouchableOpacity
+          //       key={index}
+          //       style={styles.singleRemote}
+          //       onPress={_switchRender}>
+          //       <RtcRemoteView.SurfaceView
+          //         style={{flex: 1,zIndex: 2,elevation: 2,}}
+          //         uid={value}
+          //         zOrderMediaOverlay={true}
+          //       />
+          //     </TouchableOpacity>
+          //   ),
+          // )
+          <View style={styles.remoteContainer}>
             {remoteUid.map(
               (value: number, index: React.Key | null | undefined) => (
                 <TouchableOpacity
                   key={index}
-                  style={styles.remote}
+                  style={styles.singleRemote}
                   onPress={_switchRender}>
                   <RtcRemoteView.SurfaceView
-                    style={styles.container}
+                    style={[styles.container]}
                     uid={value}
-                    zOrderMediaOverlay={true}
                   />
                 </TouchableOpacity>
               ),
             )}
-          </ScrollView>
+          </View>
         )}
+        {startPreview ? (
+          <>
+            <RtcLocalView.SurfaceView
+              style={styles.local}
+              zOrderMediaOverlay
+              zOrderOnTop
+            />
+            {/* <BlurView style={{height: '100%',width: '100%',}} blurAmount={1} blurType='dark' blurRadius={24} /> */}
+          </>
+        ) : undefined}
       </View>
     );
   };
@@ -245,18 +265,6 @@ export default function Call(props: CallProps) {
         animationIn={'lightSpeedIn'}
         animationOut={'lightSpeedOut'}
         style={styles.modalView}>
-        <View style={styles.top}>
-          <View>
-            <View style={styles.imageContainer}>
-              {props?.profileImage && (
-                <Image
-                  source={props.profileImage}
-                  style={[styles.userImg, props.imageStyle]}
-                />
-              )}
-            </View>
-          </View>
-        </View>
         {_renderVideo()}
         <View style={styles.profileContainer}>
           <Image source={props.profileImage} style={styles.profileImage} />
@@ -273,6 +281,15 @@ export default function Call(props: CallProps) {
         </View>
 
         <View style={styles.modalBottomContainer}>
+          {/* <BlurView style={{
+            height: 220,
+            width: '100%',
+            position: 'absolute',
+            bottom: 0,
+            zIndex: 1,
+            elevation: 1,
+            opacity: 0.6,
+          }} blurAmount={3} blurType='dark' blurRadius={24} /> */}
           <View style={styles.buttonParentContainer}>
             <FunctionButtons
               functionState={mute}
