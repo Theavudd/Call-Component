@@ -108,10 +108,10 @@ export const styles = StyleSheet.create({
   buttonParentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: vw(30),
+    marginTop: vh(35),
   },
   modalBottomContainer: {
-    height: vw(200),
+    height: vh(250),
     position: 'absolute',
     bottom: 0,
     width: '100%',
@@ -139,12 +139,16 @@ export const styles = StyleSheet.create({
   },
   profileContainer: {
     position: 'absolute',
-    height: vw(80),
+    height: vh(90),
+    backgroundColor: '#00000033',
+    paddingHorizontal: vw(7),
+    paddingVertical: vh(7),
+    borderRadius: vw(5),
     width: 'auto',
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    top: vw(85),
+    top: vh(100),
   },
 });

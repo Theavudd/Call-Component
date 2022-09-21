@@ -1,6 +1,6 @@
 export const LocalStrings = {
-  mute: 'mute',
-  flip: 'flip',
+  mute: 'Mute',
+  flip: 'Flip',
   speaker: 'Speaker',
   ringing: 'Ringing',
   connected: 'Connected',

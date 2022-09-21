@@ -19,10 +19,11 @@ import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
 } from 'react-native-agora';
-import {LocalImages} from '../../utils/constant/LocalImages';
 import localImages from '../../utils/localImages';
 import {LocalStrings} from '../../utils/constant/LocalStrings';
 import {showSnackBar} from '../../utils/CommonFunctions';
+import FunctionButtons from '../../components/functionButtons';
+import ImageButton from '../../components/ImageButton';
 
 interface config {
   appId: string; // AppID of the App registered on Agora
@@ -48,7 +49,7 @@ interface CallProps {
 export default function Call(props: CallProps) {
   const [mute, setMute] = useState(false);
   const [camera, setCamera] = useState(true);
-  const [speaker, setSpeaker] = useState(true);
+  const [speaker, setSpeaker] = useState(false);
   const [isJoined, setJoined] = useState(false);
   const [remoteUid, setRemoteUid] = useState<any>([]);
   const [isConnected, setConnected] = useState(false);
@@ -226,12 +227,16 @@ export default function Call(props: CallProps) {
 
   const toggleSpeaker = async () => {
     try {
-      await _engine.current?.setEnableSpeakerphone(!speaker);
+      await _engine.current?.setEnableSpeakerphone(speaker);
       setSpeaker(!speaker);
     } catch (error: any) {
       showSnackBar(error.message);
     }
   };
+
+  // renderAudio=()=>{
+
+  // }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -259,9 +264,9 @@ export default function Call(props: CallProps) {
             <Text style={styles.nameText}>{props?.profileName}</Text>
             <Text style={styles.connectingText}>{`${
               isConnected
-                ? LocalStrings.connected
-                : remoteUid.length() === 0
-                ? LocalStrings.ringing
+                ? remoteUid.length === 0
+                  ? LocalStrings.ringing
+                  : LocalStrings.connected
                 : LocalStrings.connecting
             }`}</Text>
           </View>
@@ -269,77 +274,32 @@ export default function Call(props: CallProps) {
 
         <View style={styles.modalBottomContainer}>
           <View style={styles.buttonParentContainer}>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={toggleMute}
-                activeOpacity={0.8}
-                style={
-                  !mute
-                    ? styles.roundButton
-                    : [styles.roundButton, {backgroundColor: 'white'}]
-                }>
-                <Image
-                  source={localImages.MUTE_MIC}
-                  style={
-                    !mute
-                      ? styles.roundButtonIcon
-                      : [styles.roundButtonIcon, {tintColor: 'black'}]
-                  }
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}>{LocalStrings.mute}</Text>
-            </View>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={toggleCamera}
-                activeOpacity={0.8}
-                style={
-                  camera
-                    ? styles.roundButton
-                    : [styles.roundButton, {backgroundColor: 'white'}]
-                }>
-                <Image
-                  source={localImages.Camera_OFF}
-                  style={
-                    camera
-                      ? styles.roundButtonIcon
-                      : [styles.roundButtonIcon, {tintColor: 'black'}]
-                  }
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}> {LocalStrings.CameraOff} </Text>
-            </View>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={_switchCamera}
-                style={styles.roundButton}>
-                <Image
-                  source={localImages.FLIP_CAMERA}
-                  style={styles.roundButtonIcon}
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}> {LocalStrings.flip} </Text>
-            </View>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={toggleSpeaker}
-                activeOpacity={0.8}
-                style={
-                  speaker
-                    ? styles.roundButton
-                    : [styles.roundButton, {backgroundColor: 'white'}]
-                }>
-                <Image
-                  source={localImages.SPEAKER}
-                  style={
-                    speaker
-                      ? styles.roundButtonIcon
-                      : [styles.roundButtonIcon, {tintColor: 'black'}]
-                  }
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}> {LocalStrings.speaker} </Text>
-            </View>
+            <FunctionButtons
+              functionState={mute}
+              functionMethod={toggleMute}
+              image={localImages.MUTE_MIC}
+              text={LocalStrings.mute}
+            />
+            <FunctionButtons
+              functionState={!camera}
+              functionMethod={toggleCamera}
+              image={localImages.Camera_OFF}
+              text={LocalStrings.CameraOff}
+            />
+            <ImageButton
+              text={LocalStrings.flip}
+              textStyle={styles.buttonText}
+              containerStyling={styles.roundButton}
+              image={localImages.FLIP_CAMERA}
+              ImageStyle={styles.roundButtonIcon}
+              onPressFunction={_switchCamera}
+            />
+            <FunctionButtons
+              functionState={speaker}
+              functionMethod={toggleSpeaker}
+              image={localImages.SPEAKER}
+              text={LocalStrings.speaker}
+            />
           </View>
           <TouchableOpacity
             onPress={_leaveChannel}
@@ -349,38 +309,37 @@ export default function Call(props: CallProps) {
         </View>
       </Modal>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={
+        <ImageButton
+          containerStyling={[
             props?.audioIconContainer
               ? props?.audioIconContainer
-              : styles.audioIconContainer
+              : styles.audioIconContainer,
+          ]}
+          image={
+            props?.audioCallIcon ? props?.audioCallIcon : localImages.AUDIO
           }
-          onPress={_joinAudioChannel}>
-          <Image
-            source={
-              props?.audioCallIcon ? props?.audioCallIcon : LocalImages.audio
-            }
-            style={
-              props?.audioCallIconStyle
-                ? props.audioCallIconStyle
-                : styles.audioIcon
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.videoIconContainer, props?.videoIconContainer]}
-          onPress={_joinVideoChannel}>
-          <Image
-            source={
-              props?.videoCallIcon ? props?.videoCallIcon : LocalImages.video
-            }
-            style={
-              props?.videoCallIconStyle
-                ? props.videoCallIconStyle
-                : styles.videoIcon
-            }
-          />
-        </TouchableOpacity>
+          ImageStyle={
+            props?.audioCallIconStyle
+              ? props.audioCallIconStyle
+              : styles.audioIcon
+          }
+          onPressFunction={_joinAudioChannel}
+        />
+        <ImageButton
+          containerStyling={[
+            styles.videoIconContainer,
+            props?.videoIconContainer,
+          ]}
+          image={
+            props?.videoCallIcon ? props?.videoCallIcon : localImages.VIDEO
+          }
+          ImageStyle={
+            props?.videoCallIconStyle
+              ? props.videoCallIconStyle
+              : styles.videoIcon
+          }
+          onPressFunction={_joinVideoChannel}
+        />
       </View>
     </SafeAreaView>
   );
