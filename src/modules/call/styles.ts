@@ -4,7 +4,6 @@ import {vh, vw} from '../../utils/Dimension';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   userImg: {
     height: '100%',
@@ -37,10 +36,12 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     top: 0,
+    zIndex: 100,
+    elevation: 100,
   },
   remote: {
-    width: vw(120),
-    height: vh(120),
+    width: vw(130),
+    height: vh(200),
   },
   joinScreenContainer: {
     alignItems: 'center',

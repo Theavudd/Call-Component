@@ -174,6 +174,7 @@ export default function Call(props: CallProps) {
 
   const _switchRender = () => {
     setSwitchRender(!switchRender);
+    console.log('pressed');
     setRemoteUid(remoteUid.reverse());
   };
 
@@ -227,7 +228,6 @@ export default function Call(props: CallProps) {
     try {
       await _engine.current?.setEnableSpeakerphone(!speaker);
       setSpeaker(!speaker);
-      // setSpeaker(_engine.current?.isSpeakerphoneEnabled());
     } catch (error: any) {
       showSnackBar(error.message);
     }
@@ -258,7 +258,11 @@ export default function Call(props: CallProps) {
           <View style={styles.nameContainer}>
             <Text style={styles.nameText}>{props?.profileName}</Text>
             <Text style={styles.connectingText}>{`${
-              isConnected ? LocalStrings.connected : LocalStrings.connecting
+              isConnected
+                ? LocalStrings.connected
+                : remoteUid.length() === 0
+                ? LocalStrings.ringing
+                : LocalStrings.connecting
             }`}</Text>
           </View>
         </View>

@@ -4,7 +4,7 @@ import Call from './src/modules/call';
 const config = {
   appId: '8c7c96fa8c0546db919c842a796cff88',
   token:
-    '007eJxTYPBwNjvzIn1C2wTfd25qvBOXONq5z1irPPNT9VZGiXNBx24oMFgkmydbmqUlWiQbmJqYpSRZGlomW5gYJZpbmiWnpVlY7PqonmzlrJmccl2AiYmBEQxBfDaG4sTcgpxUBgZWBhAAADV9IHc=',
+    '007eJxTYNCVDS3RW37PyDhne0n75Bip0KUFK7mX8F+pCO4WO1te1qXAYJFsnmxplpZokWxgamKWkmRpaJlsYWKUaG5plpyWZmERuU4r+cZ/7eTjHXNZmBgYwRDEZ2MoTswtyEllYGBlAAEA7echrQ==',
   channelId: 'sample',
 };
 
