@@ -5,7 +5,6 @@ import {
   PermissionsAndroid,
   Platform,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -20,11 +19,12 @@ import RtcEngine, {
   RtcLocalView,
   RtcRemoteView,
 } from 'react-native-agora';
-import {LocalImages} from '../../utils/constant/LocalImages';
 import localImages from '../../utils/localImages';
 import {LocalStrings} from '../../utils/constant/LocalStrings';
 import {showSnackBar} from '../../utils/CommonFunctions';
-import { BlurView } from '@react-native-community/blur';
+
+import FunctionButtons from '../../components/functionButtons';
+import ImageButton from '../../components/ImageButton';
 
 interface config {
   appId: string; // AppID of the App registered on Agora
@@ -50,7 +50,7 @@ interface CallProps {
 export default function Call(props: CallProps) {
   const [mute, setMute] = useState(false);
   const [camera, setCamera] = useState(true);
-  const [speaker, setSpeaker] = useState(true);
+  const [speaker, setSpeaker] = useState(false);
   const [isJoined, setJoined] = useState(false);
   const [remoteUid, setRemoteUid] = useState<any>([]);
   const [isConnected, setConnected] = useState(false);
@@ -115,9 +115,10 @@ export default function Call(props: CallProps) {
         props.config.token,
         props.config.channelId,
         null,
-        0,
+        999,
       );
       setCamera(true);
+      setJoined(true);
       setConnected(true);
       await _engine.current?.enableVideo();
     } catch (error: any) {
@@ -131,9 +132,10 @@ export default function Call(props: CallProps) {
         props.config.token,
         props.config.channelId,
         null,
-        0,
+        999,
       );
       setCamera(false);
+      setConnected(true);
       await _engine.current?.disableVideo();
     } catch (error: any) {
       showSnackBar(error.message);
@@ -176,13 +178,13 @@ export default function Call(props: CallProps) {
 
   const _switchRender = () => {
     setSwitchRender(!switchRender);
+    console.log('pressed');
     setRemoteUid(remoteUid.reverse());
   };
 
   const _renderVideo = () => {
     return (
       <View style={styles.container}>
-        
         {remoteUid !== undefined && (
           // remoteUid.map(
           //   (value: number, index: React.Key | null | undefined) => (
@@ -206,19 +208,22 @@ export default function Call(props: CallProps) {
                   style={styles.singleRemote}
                   onPress={_switchRender}>
                   <RtcRemoteView.SurfaceView
-                    style={[styles.container,]}
+                    style={[styles.container]}
                     uid={value}
                   />
                 </TouchableOpacity>
               ),
-            )
-          }
+            )}
           </View>
         )}
         {startPreview ? (
           <>
-          <RtcLocalView.SurfaceView style={styles.local} zOrderMediaOverlay zOrderOnTop />
-          {/* <BlurView style={{height: '100%',width: '100%',}} blurAmount={1} blurType='dark' blurRadius={24} /> */}
+            <RtcLocalView.SurfaceView
+              style={styles.local}
+              zOrderMediaOverlay
+              zOrderOnTop
+            />
+            {/* <BlurView style={{height: '100%',width: '100%',}} blurAmount={1} blurType='dark' blurRadius={24} /> */}
           </>
         ) : undefined}
       </View>
@@ -245,13 +250,16 @@ export default function Call(props: CallProps) {
 
   const toggleSpeaker = async () => {
     try {
-      await _engine.current?.setEnableSpeakerphone(!speaker);
+      await _engine.current?.setEnableSpeakerphone(speaker);
       setSpeaker(!speaker);
-      // setSpeaker(_engine.current?.isSpeakerphoneEnabled());
     } catch (error: any) {
       showSnackBar(error.message);
     }
   };
+
+  // renderAudio=()=>{
+
+  // }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -266,7 +274,11 @@ export default function Call(props: CallProps) {
           <View style={styles.nameContainer}>
             <Text style={styles.nameText}>{props?.profileName}</Text>
             <Text style={styles.connectingText}>{`${
-              isConnected ? LocalStrings.connected : LocalStrings.connecting
+              isConnected
+                ? remoteUid.length === 0
+                  ? LocalStrings.ringing
+                  : LocalStrings.connected
+                : LocalStrings.connecting
             }`}</Text>
           </View>
         </View>
@@ -282,79 +294,32 @@ export default function Call(props: CallProps) {
             opacity: 0.6,
           }} blurAmount={3} blurType='dark' blurRadius={24} /> */}
           <View style={styles.buttonParentContainer}>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={toggleMute}
-                activeOpacity={0.8}
-                style={
-                  !mute
-                    ? styles.roundButton
-                    : [styles.roundButton, {backgroundColor: 'white'}]
-                }>
-                <Image
-                  source={localImages.MUTE_MIC}
-                  style={
-                    !mute
-                      ? styles.roundButtonIcon
-                      : [styles.roundButtonIcon, {tintColor: 'black'}]
-                  }
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}>{LocalStrings.mute}</Text>
-            </View>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={toggleCamera}
-                activeOpacity={0.8}
-                style={
-                  camera
-                    ? styles.roundButton
-                    : [styles.roundButton, {backgroundColor: 'white'}]
-                }>
-                <Image
-                  source={localImages.CAMERA_OFF}
-                  style={
-                    camera
-                      ? styles.roundButtonIcon
-                      : [styles.roundButtonIcon, {tintColor: 'black'}]
-                  }
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}> {LocalStrings.CameraOff} </Text>
-            </View>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={_switchCamera}
-                style={switchCamera
-                  ? [styles.roundButton, {backgroundColor: 'white'}]
-                  : styles.roundButton}>
-                <Image
-                  source={ switchCamera ? localImages.REAR_CAMERA : localImages.FLIP_CAMERA}
-                  style={styles.roundButtonIcon}
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}> {LocalStrings.flip} </Text>
-            </View>
-            <View style={styles.roundButtonContainer}>
-              <TouchableOpacity
-                onPress={toggleSpeaker}
-                activeOpacity={0.8}
-                style={
-                  speaker
-                    ? styles.roundButton
-                    : [styles.roundButton, {backgroundColor: 'white'}]
-                }>
-                <Image
-                  source={localImages.SPEAKER}
-                  style={
-                    speaker
-                      ? styles.roundButtonIcon
-                      : [styles.roundButtonIcon, {tintColor: 'black'}]
-                  }
-                />
-              </TouchableOpacity>
-              <Text style={styles.buttonText}> {LocalStrings.speaker} </Text>
-            </View>
+            <FunctionButtons
+              functionState={mute}
+              functionMethod={toggleMute}
+              image={localImages.MUTE_MIC}
+              text={LocalStrings.mute}
+            />
+            <FunctionButtons
+              functionState={!camera}
+              functionMethod={toggleCamera}
+              image={localImages.CAMERA_OFF}
+              text={LocalStrings.CameraOff}
+            />
+            <ImageButton
+              text={LocalStrings.flip}
+              textStyle={styles.buttonText}
+              containerStyling={styles.roundButton}
+              image={localImages.FLIP_CAMERA}
+              ImageStyle={styles.roundButtonIcon}
+              onPressFunction={_switchCamera}
+            />
+            <FunctionButtons
+              functionState={speaker}
+              functionMethod={toggleSpeaker}
+              image={localImages.SPEAKER}
+              text={LocalStrings.speaker}
+            />
           </View>
           <TouchableOpacity
             onPress={_leaveChannel}
@@ -364,38 +329,37 @@ export default function Call(props: CallProps) {
         </View>
       </Modal>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={
+        <ImageButton
+          containerStyling={[
             props?.audioIconContainer
               ? props?.audioIconContainer
-              : styles.audioIconContainer
+              : styles.audioIconContainer,
+          ]}
+          image={
+            props?.audioCallIcon ? props?.audioCallIcon : localImages.AUDIO
           }
-          onPress={_joinAudioChannel}>
-          <Image
-            source={
-              props?.audioCallIcon ? props?.audioCallIcon : LocalImages.audio
-            }
-            style={
-              props?.audioCallIconStyle
-                ? props.audioCallIconStyle
-                : styles.audioIcon
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.videoIconContainer, props?.videoIconContainer]}
-          onPress={_joinVideoChannel}>
-          <Image
-            source={
-              props?.videoCallIcon ? props?.videoCallIcon : LocalImages.video
-            }
-            style={
-              props?.videoCallIconStyle
-                ? props.videoCallIconStyle
-                : styles.videoIcon
-            }
-          />
-        </TouchableOpacity>
+          ImageStyle={
+            props?.audioCallIconStyle
+              ? props.audioCallIconStyle
+              : styles.audioIcon
+          }
+          onPressFunction={_joinAudioChannel}
+        />
+        <ImageButton
+          containerStyling={[
+            styles.videoIconContainer,
+            props?.videoIconContainer,
+          ]}
+          image={
+            props?.videoCallIcon ? props?.videoCallIcon : localImages.VIDEO
+          }
+          ImageStyle={
+            props?.videoCallIconStyle
+              ? props.videoCallIconStyle
+              : styles.videoIcon
+          }
+          onPressFunction={_joinVideoChannel}
+        />
       </View>
     </SafeAreaView>
   );
