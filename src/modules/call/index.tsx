@@ -114,9 +114,10 @@ export default function Call(props: CallProps) {
         props.config.token,
         props.config.channelId,
         null,
-        0,
+        999,
       );
       setCamera(true);
+      setJoined(true);
       setConnected(true);
       await _engine.current?.enableVideo();
     } catch (error: any) {
@@ -130,9 +131,10 @@ export default function Call(props: CallProps) {
         props.config.token,
         props.config.channelId,
         null,
-        0,
+        999,
       );
       setCamera(false);
+      setConnected(true);
       await _engine.current?.disableVideo();
     } catch (error: any) {
       showSnackBar(error.message);
@@ -143,7 +145,6 @@ export default function Call(props: CallProps) {
     _initEngine();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log('remoteUid', remoteUid);
 
   useEffect(() => {
     return () => {
@@ -291,7 +292,7 @@ export default function Call(props: CallProps) {
             <FunctionButtons
               functionState={!camera}
               functionMethod={toggleCamera}
-              image={localImages.Camera_OFF}
+              image={localImages.CAMERA_OFF}
               text={LocalStrings.CameraOff}
             />
             <ImageButton
