@@ -43,8 +43,6 @@ export const styles = StyleSheet.create({
   },
   singleRemote: {
     flex: 1,
-    zIndex: 100,
-    elevation: 100,
   },
   rowRemote: {
     height: '50%',
