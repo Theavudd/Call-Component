@@ -281,15 +281,6 @@ export default function Call(props: CallProps) {
         </View>
 
         <View style={styles.modalBottomContainer}>
-          {/* <BlurView style={{
-            height: 220,
-            width: '100%',
-            position: 'absolute',
-            bottom: 0,
-            zIndex: 1,
-            elevation: 1,
-            opacity: 0.6,
-          }} blurAmount={3} blurType='dark' blurRadius={24} /> */}
           <View style={styles.buttonParentContainer}>
             <FunctionButtons
               functionState={mute}

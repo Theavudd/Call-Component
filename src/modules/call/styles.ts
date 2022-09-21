@@ -128,7 +128,7 @@ export const styles = StyleSheet.create({
   buttonParentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: vw(30),
+    marginTop: vh(35),
     zIndex: 10,
     elevation: 10,
     shadowColor: '#00000000',
