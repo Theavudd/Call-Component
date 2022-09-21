@@ -330,6 +330,10 @@ PODS:
     - React-Core
   - react-native-blur (4.2.0):
     - React-Core
+  - react-native-config (1.4.6):
+    - react-native-config/App (= 1.4.6)
+  - react-native-config/App (1.4.6):
+    - React-Core
   - react-native-slider (4.3.1):
     - React-Core
   - React-perflogger (0.70.0)
@@ -456,6 +460,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-agora (from `../node_modules/react-native-agora`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-config (from `../node_modules/react-native-config`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -539,6 +544,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-agora"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-config:
+    :path: "../node_modules/react-native-config"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
   React-perflogger:
@@ -610,6 +617,7 @@ SPEC CHECKSUMS:
   React-logger: 48d82b9be8e44d86668de4453fdb60255516388b
   react-native-agora: c328ef8c381d7b22cc11d1eb298d8ff8a8e7a70d
   react-native-blur: 3e9c8e8e9f7d17fa1b94e1a0ae9fd816675f5382
+  react-native-config: 7cd105e71d903104e8919261480858940a6b9c0e
   react-native-slider: d3ae4270cf8a8cc45a69912db0cc42b151560d5a
   React-perflogger: 77947e49d84e31eb87d454d4ef327542dcfeaebc
   React-RCTActionSheet: 9f5fd6c1666c1a834ab7f45a452ed08b1de44eb8
