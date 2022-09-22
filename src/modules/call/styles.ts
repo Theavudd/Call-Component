@@ -140,17 +140,17 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: vw(10),
     borderTopRightRadius: vw(10),
     overflow: 'hidden',
-    zIndex: 3,
-    elevation: 3,
+    zIndex: 8,
+    elevation: 8,
     shadowColor: '#00000000',
   },
   connectingText: {
     fontSize: 21,
-    color: '#FFFFFFA8',
+    color: '#000000CC',
   },
   nameText: {
     fontSize: 32,
-    color: 'white',
+    color: '#000000CC',
   },
   nameContainer: {
     marginLeft: 10,
@@ -165,7 +165,7 @@ export const styles = StyleSheet.create({
   profileContainer: {
     position: 'absolute',
     height: vh(90),
-    backgroundColor: '#00000033',
+    backgroundColor: '#00000000',
     paddingHorizontal: vw(7),
     paddingVertical: vh(7),
     borderRadius: vw(5),

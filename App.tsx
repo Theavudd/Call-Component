@@ -15,7 +15,7 @@ export default function App() {
   useEffect(() => {
     services.getToken(
       'sample',
-      '999',
+      '0',
       (res: any) => {
         setToken(res?.data?.rtcToken);
       },

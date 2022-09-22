@@ -5,9 +5,11 @@ import {
   PermissionsAndroid,
   Platform,
   SafeAreaView,
+  StyleProp,
   Text,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 import {styles} from './styles';
 import Modal from 'react-native-modal';
@@ -34,15 +36,15 @@ interface config {
 
 interface CallProps {
   config: config; // Config file for Agora
-  joinScreenContainerStyle?: any; // Join Screen Container Style
-  imageContainerStyle?: any; //(Optional) Image Container Style Object
-  imageStyle?: any; //(Optional) Image Style Object
-  videoIconContainer?: any; //(Optional) Video Icon Container Style
-  audioIconContainer?: any; //(Optional) Video Icon Container Style
+  joinScreenContainerStyle?: StyleProp<ViewStyle> | 'undefined'; // Join Screen Container Style
+  imageContainerStyle?: StyleProp<ViewStyle> | 'undefined'; //(Optional) Image Container Style Object
+  imageStyle?: StyleProp<ImageStyle> | 'undefined'; //(Optional) Image Style Object
+  videoIconContainerStyle?: StyleProp<ViewStyle> | 'undefined'; //(Optional) Video Icon Container Style
+  audioIconContainerStyle?: StyleProp<ViewStyle> | 'undefined'; //(Optional) Video Icon Container Style
   videoCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
   audioCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
-  audioCallIconStyle?: ImageStyle; //(Optional) Video Icon Styling
-  videoCallIconStyle?: ImageStyle; //(Optional) Video Icon Styling
+  audioCallIconStyle?: StyleProp<ImageStyle> | 'undefined'; //(Optional) Video Icon Styling
+  videoCallIconStyle?: StyleProp<ImageStyle> | 'undefined'; //(Optional) Video Icon Styling
   profileName: string; //Name of the Profile
   profileImage?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
 }
@@ -57,6 +59,7 @@ export default function Call(props: CallProps) {
   const [startPreview, setStartPreview] = useState(false);
   const [switchCamera, setSwitchCamera] = useState(false);
   const [switchRender, setSwitchRender] = useState(true);
+  const [isAudioCall, setAudioCall] = useState(false);
 
   let _engine = useRef<RtcEngine | null>(null);
 
@@ -115,7 +118,7 @@ export default function Call(props: CallProps) {
         props.config.token,
         props.config.channelId,
         null,
-        999,
+        0,
       );
       setCamera(true);
       setJoined(true);
@@ -132,10 +135,11 @@ export default function Call(props: CallProps) {
         props.config.token,
         props.config.channelId,
         null,
-        999,
+        0,
       );
       setCamera(false);
       setConnected(true);
+      setAudioCall(true);
       await _engine.current?.disableVideo();
     } catch (error: any) {
       showSnackBar(error.message);
@@ -146,7 +150,7 @@ export default function Call(props: CallProps) {
     _initEngine();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log('remoteUid',remoteUid)
+  console.log('remoteUid', remoteUid);
 
   useEffect(() => {
     return () => {
@@ -185,47 +189,55 @@ export default function Call(props: CallProps) {
   const _renderVideo = () => {
     return (
       <View style={styles.container}>
-        {remoteUid !== undefined && (
-          // remoteUid.map(
-          //   (value: number, index: React.Key | null | undefined) => (
-          //     <TouchableOpacity
-          //       key={index}
-          //       style={styles.singleRemote}
-          //       onPress={_switchRender}>
-          //       <RtcRemoteView.SurfaceView
-          //         style={{flex: 1,zIndex: 2,elevation: 2,}}
-          //         uid={value}
-          //         zOrderMediaOverlay={true}
-          //       />
-          //     </TouchableOpacity>
-          //   ),
-          // )
-          <View style={styles.remoteContainer}>
-            {remoteUid.map(
-              (value: number, index: React.Key | null | undefined) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.singleRemote}
-                  onPress={_switchRender}>
-                  <RtcRemoteView.SurfaceView
-                    style={[styles.container]}
-                    uid={value}
-                  />
-                </TouchableOpacity>
-              ),
-            )}
+        {isAudioCall ? (
+          <View style={{height: '100%',width: '100%',alignItems: 'center',justifyContent: 'center',backgroundColor: 'white',}} >
+          <Image source={props.profileImage} style={{width: '100%', resizeMode: 'contain',backgroundColor: 'white',  }} blurRadius={10} />
           </View>
-        )}
-        {startPreview ? (
+        ) : (
           <>
-            <RtcLocalView.SurfaceView
-              style={styles.local}
-              zOrderMediaOverlay
-              zOrderOnTop
-            />
-            {/* <BlurView style={{height: '100%',width: '100%',}} blurAmount={1} blurType='dark' blurRadius={24} /> */}
+            {remoteUid !== undefined && (
+              // remoteUid.map(
+              //   (value: number, index: React.Key | null | undefined) => (
+              //     <TouchableOpacity
+              //       key={index}
+              //       style={styles.singleRemote}
+              //       onPress={_switchRender}>
+              //       <RtcRemoteView.SurfaceView
+              //         style={{flex: 1,zIndex: 2,elevation: 2,}}
+              //         uid={value}
+              //         zOrderMediaOverlay={true}
+              //       />
+              //     </TouchableOpacity>
+              //   ),
+              // )
+              <View style={styles.remoteContainer}>
+                {remoteUid.map(
+                  (value: number, index: React.Key | null | undefined) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.singleRemote}
+                      onPress={_switchRender}>
+                      <RtcRemoteView.SurfaceView
+                        style={[styles.container]}
+                        uid={value}
+                      />
+                    </TouchableOpacity>
+                  ),
+                )}
+              </View>
+            )}
+            {startPreview ? (
+              <>
+                <RtcLocalView.SurfaceView
+                  style={styles.local}
+                  zOrderMediaOverlay
+                  zOrderOnTop
+                />
+                {/* <BlurView style={{height: '100%',width: '100%',}} blurAmount={1} blurType='dark' blurRadius={24} /> */}
+              </>
+            ) : undefined}
           </>
-        ) : undefined}
+        )}
       </View>
     );
   };
@@ -243,6 +255,7 @@ export default function Call(props: CallProps) {
     try {
       await _engine.current?.enableLocalVideo(!camera);
       setCamera(!camera);
+      setAudioCall(false)
     } catch (error: any) {
       showSnackBar(error.message);
     }
@@ -284,15 +297,6 @@ export default function Call(props: CallProps) {
         </View>
 
         <View style={styles.modalBottomContainer}>
-          {/* <BlurView style={{
-            height: 220,
-            width: '100%',
-            position: 'absolute',
-            bottom: 0,
-            zIndex: 1,
-            elevation: 1,
-            opacity: 0.6,
-          }} blurAmount={3} blurType='dark' blurRadius={24} /> */}
           <View style={styles.buttonParentContainer}>
             <FunctionButtons
               functionState={mute}
@@ -331,8 +335,8 @@ export default function Call(props: CallProps) {
       <View style={styles.buttonsContainer}>
         <ImageButton
           containerStyling={[
-            props?.audioIconContainer
-              ? props?.audioIconContainer
+            props?.audioIconContainerStyle
+              ? props?.audioIconContainerStyle
               : styles.audioIconContainer,
           ]}
           image={
@@ -348,7 +352,7 @@ export default function Call(props: CallProps) {
         <ImageButton
           containerStyling={[
             styles.videoIconContainer,
-            props?.videoIconContainer,
+            props?.videoIconContainerStyle,
           ]}
           image={
             props?.videoCallIcon ? props?.videoCallIcon : localImages.VIDEO
