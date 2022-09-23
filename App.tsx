@@ -28,7 +28,7 @@ export default function App() {
   return (
     <Call
       config={{appId: config.appId, token: token, channelId: 'sample'}}
-      videoIconContainer={undefined}
+      videoIconContainerStyle={undefined}
       videoCallIcon={undefined}
       videoCallIconStyle={undefined}
       profileImage={require('./src/assets/images/videoCamera.png')}

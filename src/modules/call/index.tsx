@@ -36,15 +36,15 @@ interface config {
 
 interface CallProps {
   config: config; // Config file for Agora
-  joinScreenContainerStyle?: StyleProp<ViewStyle> | 'undefined'; // Join Screen Container Style
-  imageContainerStyle?: StyleProp<ViewStyle> | 'undefined'; //(Optional) Image Container Style Object
-  imageStyle?: StyleProp<ImageStyle> | 'undefined'; //(Optional) Image Style Object
-  videoIconContainerStyle?: StyleProp<ViewStyle> | 'undefined'; //(Optional) Video Icon Container Style
-  audioIconContainerStyle?: StyleProp<ViewStyle> | 'undefined'; //(Optional) Video Icon Container Style
+  joinScreenContainerStyle?: StyleProp<ViewStyle> | undefined; // Join Screen Container Style
+  imageContainerStyle?: StyleProp<ViewStyle> | undefined; //(Optional) Image Container Style Object
+  imageStyle?: StyleProp<ImageStyle> | undefined; //(Optional) Image Style Object
+  videoIconContainerStyle?: StyleProp<ViewStyle> | undefined; //(Optional) Video Icon Container Style
+  audioIconContainerStyle?: StyleProp<ViewStyle> | undefined; //(Optional) Video Icon Container Style
   videoCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
   audioCallIcon?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
-  audioCallIconStyle?: StyleProp<ImageStyle> | 'undefined'; //(Optional) Video Icon Styling
-  videoCallIconStyle?: StyleProp<ImageStyle> | 'undefined'; //(Optional) Video Icon Styling
+  audioCallIconStyle?: StyleProp<ImageStyle> | undefined; //(Optional) Video Icon Styling
+  videoCallIconStyle?: StyleProp<ImageStyle> | undefined; //(Optional) Video Icon Styling
   profileName: string; //Name of the Profile
   profileImage?: any; //(Optional) Image URI OR Local location of the image (require keyword is required in case of local image)
 }
@@ -110,6 +110,10 @@ export default function Call(props: CallProps) {
       console.info('UserOffline', uid, reason);
       setRemoteUid(remoteUid.filter((value: any) => value !== uid));
     });
+    // _engine.current?.addListener('RemoteVideoStateChanged', (uid: any, reason: any) => {
+    //   console.info('RemoteVideoStateChanged', uid, reason);
+    //   setRemoteUid(remoteUid.filter((value: any) => value !== uid));
+    // });
   };
 
   const _joinVideoChannel = async () => {

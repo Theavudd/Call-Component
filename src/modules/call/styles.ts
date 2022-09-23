@@ -42,7 +42,8 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   singleRemote: {
-    flex: 1,
+    height: vh(812),
+    width: vw(375),
   },
   rowRemote: {
     height: '50%',
@@ -68,8 +69,8 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   videoIconContainer: {
-    height: vh(25),
-    width: vw(25),
+    height: vh(40),
+    width: vw(40),
     marginHorizontal: vw(5),
   },
   audioIcon: {
@@ -77,8 +78,8 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   audioIconContainer: {
-    height: vh(25),
-    width: vw(25),
+    height: vh(40),
+    width: vw(40),
     marginHorizontal: vw(10),
   },
   modalView: {
