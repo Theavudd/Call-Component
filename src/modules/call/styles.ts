@@ -5,6 +5,23 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  profileImageContainer: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageBackgroundContainer: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+  },
+  profileIconImage: {
+    width: '100%',
+    height: '90%',
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+  },
   userImg: {
     height: '100%',
     width: '100%',
@@ -146,11 +163,11 @@ export const styles = StyleSheet.create({
   },
   connectingText: {
     fontSize: 21,
-    color: '#000000CC',
+    color: '#FFFFFFCC',
   },
   nameText: {
     fontSize: 32,
-    color: '#000000CC',
+    color: '#FFFFFFCC',
   },
   nameContainer: {
     marginLeft: 10,
@@ -176,4 +193,32 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     top: vh(100),
   },
+  incomingCallView: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+    backgroundColor: '#007890',
+  },
+  callBottonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    height: vh(400),
+    alignItems: 'flex-end',
+  },
+  declineCall: {
+    backgroundColor: '#EB5545',
+    height: vw(60),
+    width: vw(60),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: vw(30),
+  },
+  acceptCall: {
+    backgroundColor: '#67CE67',
+    height: vw(60),
+    width: vw(60),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: vw(30),
+  },
+  rotate: {transform: [{rotate: '-135deg'}]},
 });
