@@ -12,6 +12,8 @@ const config = {
 
 export default function App() {
   const [token, setToken] = useState('');
+  const [type,setType] = useState('video')
+  const [iscallActive, setIscallActive] = useState(false)
   useEffect(() => {
     services.getToken(
       'sample',
@@ -25,13 +27,33 @@ export default function App() {
     );
   }, []);
 
+  const onVideoCallPress = () => {
+    setType('video');
+    setIscallActive(true)
+  };
+
+  const onAudioCallPress = () => {
+    setType('audio');
+    setIscallActive(true)
+  };
+
+  const onEndCall = () => {
+    setIscallActive(false)
+  };
+
   return (
     <Call
+    isCallActive={iscallActive}
+    onEndCall={onEndCall}
+        onVideoCallPress={onVideoCallPress}
+        onAudioCallPress={onAudioCallPress}
+    type={type}
       config={{appId: config.appId, token: token, channelId: 'sample'}}
       videoIconContainerStyle={undefined}
       videoCallIcon={undefined}
       videoCallIconStyle={undefined}
-      profileImage={require('./src/assets/images/videoCamera.png')}
+      // profileImage={require('./src/assets/images/img.jpeg')}
+      // profileImage={{uri: 'https://www.codedaily.io/me/me.jpg',}}
       profileName={'John Smith'}
     />
   );
